@@ -171,14 +171,13 @@ Product images can be added two ways from the admin panel:
 
 ---
 
-## 🌐 Deployment
-
-- **Backend:** deploy to Render, Railway, or similar. Set the same environment variables there, pointed at your production MongoDB (Atlas) and live Razorpay/Cloudinary keys.
-- **Frontend:** `npm run build` inside `client/`, deploy the `dist/` folder to Vercel, Netlify, or similar. Update the API base URL in `client/src/services/api.js` to point at your deployed backend, since the local dev proxy only works locally.
-- Remember to add your deployed backend's IP (or `0.0.0.0/0` for simplicity, though not recommended for production) to MongoDB Atlas's Network Access allowlist.
-
----
-
 ## 📄 License
 
 This project is available under the MIT License — feel free to use it as a learning reference or a starting point for your own store.
+
+---
+
+## Author
+
+**Deepak Gupta**
+[GitHub](https://github.com/DeepakGupte2006) · [LinkedIn](https://linkedin.com/in/deepakgupta) · your.email@dg7842661@gmail.com
