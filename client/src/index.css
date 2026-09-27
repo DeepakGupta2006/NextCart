@@ -1,0 +1,44 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-linen text-ink font-body antialiased;
+}
+
+h1, h2, h3, h4 {
+  @apply font-display;
+}
+
+::selection {
+  background-color: #E8A33D;
+  color: #16211D;
+}
+
+.container-app {
+  @apply max-w-7xl mx-auto px-5 md:px-8;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-pine-500 px-5 py-3 text-sm font-semibold text-linen transition-colors hover:bg-pine-600 disabled:opacity-50 disabled:cursor-not-allowed;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-md border border-pine-500 px-5 py-3 text-sm font-semibold text-pine-500 transition-colors hover:bg-pine-50 disabled:opacity-50;
+}
+
+.btn-accent {
+  @apply inline-flex items-center justify-center gap-2 rounded-md bg-amber-500 px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-amber-600;
+}
+
+.input-field {
+  @apply w-full rounded-md border border-pine-100 bg-white px-4 py-3 text-sm text-ink placeholder:text-pine-300 focus:border-pine-500 focus:outline-none focus:ring-2 focus:ring-pine-100;
+}
+
+.card {
+  @apply rounded-lg border border-pine-50 bg-white;
+}
