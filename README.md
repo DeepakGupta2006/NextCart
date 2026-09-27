@@ -175,9 +175,3 @@ Product images can be added two ways from the admin panel:
 
 This project is available under the MIT License — feel free to use it as a learning reference or a starting point for your own store.
 
----
-
-## Author
-
-**Deepak Gupta**
-[GitHub](https://github.com/DeepakGupte2006) · [LinkedIn](https://linkedin.com/in/deepakgupta) · your.email@dg7842661@gmail.com
