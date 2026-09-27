@@ -1,126 +1,184 @@
 # NextCart
 
-A full-stack e-commerce app (React + Vite + Tailwind on the frontend, Node/Express + MongoDB on the backend). Brand palette is custom — pine green, amber, and coral — not the default Tailwind blue/indigo.
+A full-stack e-commerce web app for a fashion/apparel store — built on the MERN stack (MongoDB, Express, React, Node.js) with a custom design system, real payment processing, and cloud image hosting.
+
+---
+
+## ✨ Features
+
+### Customer-facing
+- Browse products by category — Men, Women, Kids, Accessories
+- Search, filter by price, and sort by price/rating
+- Product detail pages with size/color selection and stock awareness
+- Persistent shopping cart tied to your account
+- Full checkout flow with shipping address management
+- **Real online payments via Razorpay**, with server-side signature verification (never trusts the client's word that payment succeeded)
+- Cash on Delivery as an alternative payment method
+- Order history and order status tracking
+- JWT-based authentication (register/login), with profile management
+
+### Admin dashboard
+- Product management — create, edit, delete, with **drag-and-drop / file-picker image uploads to Cloudinary**
+- Order management — view all orders, update status (pending → processing → shipped → delivered)
+- User management — view all accounts, enable/disable access
+
+### Engineering details worth knowing
+- Passwords hashed with bcrypt; JWT auth on protected routes
+- Rate limiting on auth and general API routes
+- Razorpay payments verified via HMAC-SHA256 signature recomputation server-side — the amount charged is always derived from the user's live cart total, never trusted from the frontend
+- Image uploads go straight to Cloudinary via in-memory buffer streaming (no files ever touch local disk)
+- Custom Tailwind color system (`pine`, `amber`, `coral`, `linen`, `ink`) instead of default framework colors, for a distinct brand identity
+
+---
+
+## 🧱 Tech Stack
+
+**Frontend:** React 18 (Vite), React Router, Tailwind CSS, Axios, react-hot-toast
+**Backend:** Node.js, Express, MongoDB + Mongoose, JWT, bcryptjs, express-rate-limit
+**Payments:** Razorpay (Orders API + signature verification)
+**Media:** Cloudinary (image hosting) + Multer (in-memory upload handling)
+
+---
+
+## 📁 Project Structure
 
 ```
 NextCart/
-├── client/      React (Vite) frontend
-├── server/      Node/Express + MongoDB backend
-└── package.json convenience scripts
+├── client/                  # React (Vite) frontend
+│   ├── public/
+│   └── src/
+│       ├── components/      # layout, product, cart, common
+│       ├── context/         # AuthContext, CartContext
+│       ├── hooks/           # useAuth, useCart
+│       ├── pages/           # Home, Shop, ProductDetail, Cart, Checkout, Auth, Profile, Admin
+│       ├── services/        # API calls (auth, product, cart, order, payment, address)
+│       └── utils/
+│
+├── server/                  # Express + MongoDB backend
+│   ├── src/
+│   │   ├── config/          # db, jwt, razorpay, cloudinary
+│   │   ├── controllers/     # auth, product, cart, order, payment, upload, address, user
+│   │   ├── middleware/      # auth, rate limiting, uploads, error handling
+│   │   ├── models/          # User, Product, Cart, Order, Review
+│   │   ├── routes/
+│   │   ├── seed/            # sample product seed script
+│   │   └── utils/           # shared pricing logic, response helpers
+│   └── server.js
+│
+└── README.md
 ```
 
-Everything below has already been checked: the backend files pass `node --check`, and `npm run build` on the client completes cleanly.
-
 ---
 
-## 1. What you need installed first
+## 🚀 Getting Started
 
-- **Node.js 18+** and npm — check with `node -v` and `npm -v`
-- **MongoDB** — either:
-  - installed locally (`mongod` running on `localhost:27017`), or
-  - a free [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) cluster (gives you a connection string instead)
+### Prerequisites
+- Node.js 18+
+- A MongoDB database (local, or free on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
+- A free [Razorpay](https://dashboard.razorpay.com) account (Test Mode keys) for payments
+- A free [Cloudinary](https://cloudinary.com) account for image uploads
 
----
-
-## 2. Get the code onto your machine
-
-Unzip the `NextCart` folder anywhere, then open a terminal inside it.
-
----
-
-## 3. Set up the backend
-
+### 1. Clone and install
 ```bash
-cd NextCart/server
-npm install
+git clone <your-repo-url>
+cd NextCart
+cd server && npm install
+cd ../client && npm install
 ```
 
-Create your real environment file from the example:
-
+### 2. Configure environment variables
+Copy the example file and fill in your own values:
 ```bash
+cd server
 cp .env.example .env
 ```
 
-Open `.env` and fill in:
+| Variable | Description |
+|---|---|
+| `PORT` | Port the API runs on (default `5000`) |
+| `MONGO_URI` | Your MongoDB connection string |
+| `JWT_SECRET` | Any long random string, used to sign auth tokens |
+| `JWT_EXPIRES_IN` | Token lifetime (e.g. `7d`) |
+| `CLIENT_URL` | Frontend origin, for CORS (`http://localhost:5173`) |
+| `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET` | From your Razorpay dashboard's API Keys |
+| `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET` | From your Cloudinary dashboard |
 
-```
-PORT=5000
-NODE_ENV=development
-MONGO_URI=mongodb://127.0.0.1:27017/nextcart
-JWT_SECRET=replace_this_with_a_long_random_secret
-JWT_EXPIRES_IN=7d
-CLIENT_URL=http://localhost:5173
-```
-
-- If you're using **Atlas**, replace `MONGO_URI` with the connection string Atlas gives you (it looks like `mongodb+srv://user:pass@cluster.mongodb.net/nextcart`).
-- Replace `JWT_SECRET` with any long random string — this signs login tokens.
-
-**(Optional but recommended)** Seed the database with 8 sample products so the shop isn't empty:
-
+### 3. Seed sample data (optional)
 ```bash
 npm run seed
 ```
+This wipes and repopulates the `products` collection with starter items — useful for a first run, but skip it later if you've since added your own products through the admin panel (it deletes everything first).
 
-Start the API server:
-
+### 4. Run it
+In one terminal:
 ```bash
-npm run dev
+cd server && npm run dev
 ```
-
-You should see `MongoDB connected` and `NextCart API running on http://localhost:5000`. Leave this terminal open.
-
----
-
-## 4. Set up the frontend
-
-Open a **second terminal**:
-
+In another:
 ```bash
-cd NextCart/client
-npm install
-npm run dev
+cd client && npm run dev
 ```
+Visit **http://localhost:5173**.
 
-Vite will print a local URL, normally `http://localhost:5173`. Open that in your browser — the frontend is pre-configured to proxy `/api` calls to `http://localhost:5000`, so no extra config is needed.
-
----
-
-## 5. Try it out
-
-1. Go to `http://localhost:5173`
-2. Click **Sign in → New here? Create an account** and register a user
-3. Browse **Men / Women / Kids / Accessories**, add something to your bag, and check out with **Cash on delivery**
-4. To use the **admin dashboard**, open MongoDB (Compass, Atlas UI, or `mongosh`) and change your user's `role` field from `"user"` to `"admin"`:
-   ```js
-   db.users.updateOne({ email: "you@example.com" }, { $set: { role: "admin" } })
-   ```
-   Then log out and back in — an **Admin** link will appear in the navbar, letting you manage products, orders, and users.
+### 5. Get admin access
+Register an account on the site, then in your database, find your user document in the `users` collection and change:
+```js
+db.users.updateOne({ email: "you@example.com" }, { $set: { role: "admin" } })
+```
+Log out and back in — an **Admin** link appears in the navbar.
 
 ---
 
-## 6. Notes on payments
+## 💳 Payments
 
-`paymentMethod: "razorpay"` in checkout currently just marks the order as paid immediately as a placeholder — it does **not** call the real Razorpay API. To go live with real payments:
+Razorpay is fully wired up in Test Mode by default:
 
-1. Create a Razorpay account and get your Key ID / Key Secret.
-2. Add them to `server/.env`.
-3. In `server/src/controllers/orderController.js`, create a Razorpay order via their SDK before creating your own `Order`, and verify the payment signature on a webhook or a `/verify` route.
-4. On the frontend, load Razorpay's checkout.js script and open their payment widget before calling `placeOrder`.
+1. The backend creates a Razorpay order sized to the user's live cart total (`POST /api/payment/razorpay/order`)
+2. The frontend opens Razorpay's checkout widget with that order
+3. On success, the payment proof (`razorpay_order_id`, `razorpay_payment_id`, `razorpay_signature`) is sent to `POST /api/orders`
+4. **The backend recomputes the HMAC-SHA256 signature itself** using the Razorpay key secret, and only marks the order as paid if it matches — client-reported success is never trusted alone
 
-## 7. Notes on product images
-
-Products store `images` as an array of URLs (see the admin "New product" form — paste comma-separated URLs). For real image uploads, wire up `server/src/config/cloudinary.js` with your Cloudinary credentials and add a `multer` upload route; the folder structure already has a place for this.
+Use Razorpay's [test card numbers](https://razorpay.com/docs/payments/payments/test-card-details/) (e.g. `4111 1111 1111 1111`, any future expiry/CVV) to test without real transactions. Switching to live payments later is just a matter of swapping Test keys for Live keys in `.env` — no code changes required.
 
 ---
 
-## 8. Deploying
+## 🖼️ Image Uploads
 
-- **Backend**: deploy `server/` to Render, Railway, or any Node host; set the same environment variables there, and point `MONGO_URI` at Atlas.
-- **Frontend**: run `npm run build` inside `client/`, then deploy the generated `dist/` folder to Vercel, Netlify, or similar. Update the frontend's API base URL (in `client/src/services/api.js`) to your deployed backend's URL, since the Vite dev proxy only works locally.
+Product images can be added two ways from the admin panel:
+- **Upload real files** — dragged/selected images are streamed straight to Cloudinary and the URL is filled in automatically
+- **Paste external URLs** — comma-separated, for quick prototyping with stock photos
+
+> **Note on placeholder/stock images:** if you're populating products with photos from external sites (stock photo sites, marketplaces, etc.), make sure you have the rights to use them — this matters especially before deploying the site publicly. Paid/licensed stock photos (e.g. Unsplash+, iStock, or product photography from other retailers) generally aren't licensed for reuse on an unrelated storefront.
 
 ---
 
-## Tech stack
+## 📡 API Overview
 
-**Frontend:** React 18, Vite, React Router, Tailwind CSS, Axios, react-hot-toast
-**Backend:** Node.js, Express, MongoDB + Mongoose, JWT auth, bcryptjs, express-rate-limit
+| Method | Route | Description |
+|---|---|---|
+| `POST` | `/api/auth/register` , `/api/auth/login` | Auth |
+| `GET`/`PUT` | `/api/auth/me` | Current user profile |
+| `GET` | `/api/products` | List products (filter/search/sort/paginate) |
+| `POST`/`PUT`/`DELETE` | `/api/products` | Admin product CRUD |
+| `POST` | `/api/products/upload` | Admin image upload to Cloudinary |
+| `GET`/`POST`/`PUT`/`DELETE` | `/api/cart` | Cart management |
+| `POST` | `/api/orders` | Place an order (COD or Razorpay) |
+| `GET` | `/api/orders/mine` , `/api/orders` | Order history / admin order list |
+| `PUT` | `/api/orders/:id/status` | Admin order status update |
+| `POST` | `/api/payment/razorpay/order` | Create a Razorpay order for checkout |
+| `GET`/`POST`/`PUT`/`DELETE` | `/api/addresses` | Saved shipping addresses |
+| `GET`/`PUT` | `/api/users` | Admin user management |
+
+---
+
+## 🌐 Deployment
+
+- **Backend:** deploy to Render, Railway, or similar. Set the same environment variables there, pointed at your production MongoDB (Atlas) and live Razorpay/Cloudinary keys.
+- **Frontend:** `npm run build` inside `client/`, deploy the `dist/` folder to Vercel, Netlify, or similar. Update the API base URL in `client/src/services/api.js` to point at your deployed backend, since the local dev proxy only works locally.
+- Remember to add your deployed backend's IP (or `0.0.0.0/0` for simplicity, though not recommended for production) to MongoDB Atlas's Network Access allowlist.
+
+---
+
+## 📄 License
+
+This project is available under the MIT License — feel free to use it as a learning reference or a starting point for your own store.
