@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
       const data = await fetchCart();
       setCart(data);
     } catch (err) {
-      // silently ignore — user likely not logged in
+ 
     } finally {
       setLoading(false);
     }
