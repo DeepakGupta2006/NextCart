@@ -37,7 +37,7 @@ const createRazorpayOrder = asyncHandler(async (req, res) => {
 const verifyRazorpaySignature = (paymentResult) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = paymentResult || {};
 
-  // TEMPORARY DEBUG LOGGING — remove once the mismatch is fixed
+  
   console.log("---- Razorpay signature debug ----");
   console.log("raw paymentResult received:", JSON.stringify(paymentResult));
   console.log("order_id:", razorpay_order_id, "| payment_id:", razorpay_payment_id, "| signature:", razorpay_signature);

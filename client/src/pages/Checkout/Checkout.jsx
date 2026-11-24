@@ -50,7 +50,7 @@ const Checkout = () => {
         prefill: { name: user?.name, email: user?.email },
         theme: { color: "#0F3D3E" },
         handler: (response) => {
-          // response contains razorpay_order_id, razorpay_payment_id, razorpay_signature
+         
           resolve(response);
         },
         modal: {
