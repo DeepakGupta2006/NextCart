@@ -16,7 +16,7 @@ export const CartProvider = ({ children }) => {
     } else {
       setCart({ items: [] });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [user]);
 
   const refreshCart = async () => {
